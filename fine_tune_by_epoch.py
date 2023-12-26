@@ -14,10 +14,10 @@ parser = argparse.ArgumentParser(description="Training script with benchmarking 
 parser.add_argument("--model_id", type=str, default="meta-llama/Llama-2-7b-chat-hf", help="HuggingFace model ID")
 parser.add_argument("--output_dir", type=str, default="outputs", help="Output directory for saving models and logs")
 parser.add_argument("--batch_size", type=int, default=1, help="Per device training batch size")
-parser.add_argument("--max_steps", type=int, default=10, help="Maximum number of training steps")
 parser.add_argument("--learning_rate", type=float, default=2e-4, help="Learning rate")
 parser.add_argument("--fp16", action="store_true", help="Enable FP16 training")
-parser.add_argument("--dataset", type=str, default="Abirate/english_quotes", help="HuggingFace DataSet")
+parser.add_argument("--dataset", type=str, default="Abirate/english_quotes", help="Dataset path or HuggingFace DataSet ID")
+parser.add_argument("--use_local_dataset", action="store_true", help="Use local dataset instead of HuggingFace DataSet")
 parser.add_argument("--num_epochs", type=int, default=1, help="Number of training epochs")
 args = parser.parse_args()
 
@@ -63,7 +63,12 @@ def print_trainable_parameters(model):
 print_trainable_parameters(model)
 
 # Load dataset
-data = load_dataset(args.dataset)
+if args.use_local_dataset:
+    # Load dataset from local directory
+    data = load_dataset("json", data_files=args.dataset)
+else:
+    # Load dataset from Hugging Face DataSet Hub
+    data = load_dataset(args.dataset)
 data = data.map(lambda samples: tokenizer(samples["quote"]), batched=True)
 
 # Calculate total steps per epoch
@@ -84,7 +89,7 @@ for epoch in range(args.num_epochs):
             per_device_train_batch_size=args.batch_size,
             gradient_accumulation_steps=4,
             warmup_steps=2,
-            max_steps=total_steps_per_epoch,  # Set max_steps for a full epoch
+            max_steps=(epoch + 1) * total_steps_per_epoch, # Set max_steps for a full epoch
             learning_rate=args.learning_rate,
             fp16=args.fp16,
             logging_steps=1,
