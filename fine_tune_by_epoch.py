@@ -18,7 +18,7 @@ parser.add_argument("--learning_rate", type=float, default=2e-4, help="Learning 
 parser.add_argument("--fp16", action="store_true", help="Enable FP16 training")
 parser.add_argument("--dataset", type=str, default="Abirate/english_quotes", help="Dataset path or HuggingFace DataSet ID")
 parser.add_argument("--use_local_dataset", action="store_true", help="Use local dataset instead of HuggingFace DataSet")
-parser.add_argument("--num_epochs", type=int, default=1, help="Number of training epochs")
+parser.add_argument("--num_train_epochs", type=int, default=1, help="Number of training epochs")
 args = parser.parse_args()
 
 # Set Hugging Face token
@@ -69,17 +69,20 @@ if args.use_local_dataset:
 else:
     # Load dataset from Hugging Face DataSet Hub
     data = load_dataset(args.dataset)
-data = data.map(lambda samples: tokenizer(samples["quote"]), batched=True)
+data = data.map(lambda samples: tokenizer(samples["instruction"]), batched=True)
+print(f"Number of training examples: {len(data['train'])}")
+print(f"Batch size: {args.batch_size}")
 
 # Calculate total steps per epoch
 total_steps_per_epoch = len(data["train"]) // args.batch_size
+print(f"Total steps per epoch: {total_steps_per_epoch}")
 
 # Benchmarking start time
 start_time = time.time()
 
 # Training loop over multiple epochs
-for epoch in range(args.num_epochs):
-    print(f"Epoch {epoch + 1}/{args.num_epochs}")
+for epoch in range(args.num_train_epochs):
+    print(f"Epoch {epoch + 1}/{args.num_train_epochs}")
 
     # Configure Trainer
     trainer = transformers.Trainer(
@@ -88,8 +91,8 @@ for epoch in range(args.num_epochs):
         args=transformers.TrainingArguments(
             per_device_train_batch_size=args.batch_size,
             gradient_accumulation_steps=4,
+            num_train_epochs=args.num_train_epochs,
             warmup_steps=2,
-            max_steps=(epoch + 1) * total_steps_per_epoch, # Set max_steps for a full epoch
             learning_rate=args.learning_rate,
             fp16=args.fp16,
             logging_steps=1,
@@ -101,9 +104,13 @@ for epoch in range(args.num_epochs):
         data_collator=transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False),
     )
     model.config.use_cache = False  # Silence the warnings. Please re-enable for inference!
-
+    
+    
     # Training
     trainer.train()
+    # Print the current epoch based on total steps
+    current_epoch = (epoch * total_steps_per_epoch + trainer.state.global_step) / total_steps_per_epoch
+    print(f"Current epoch: {current_epoch:.2f}")
 
 # Benchmarking end time
 end_time = time.time()
