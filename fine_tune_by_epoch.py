@@ -19,6 +19,7 @@ parser.add_argument("--fp16", action="store_true", help="Enable FP16 training")
 parser.add_argument("--dataset", type=str, default="Abirate/english_quotes", help="Dataset path or HuggingFace DataSet ID")
 parser.add_argument("--use_local_dataset", action="store_true", help="Use local dataset instead of HuggingFace DataSet")
 parser.add_argument("--num_train_epochs", type=int, default=1, help="Number of training epochs")
+parser.add_argument("--sample_key", type=str default="quote", help="Accessing the input samples from the dictionary using the key "input." whic will apply the tokenizer on it ")
 args = parser.parse_args()
 
 # Set Hugging Face token
@@ -34,6 +35,7 @@ bnb_config = BitsAndBytesConfig(
     bnb_4bit_compute_dtype=torch.bfloat16
 )
 tokenizer = AutoTokenizer.from_pretrained(model_id)
+tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map={"": 0})
 
 # Enable gradient checkpointing and LORA
@@ -69,7 +71,7 @@ if args.use_local_dataset:
 else:
     # Load dataset from Hugging Face DataSet Hub
     data = load_dataset(args.dataset)
-data = data.map(lambda samples: tokenizer(samples["instruction"]), batched=True)
+data = data.map(lambda samples: tokenizer(samples[args.sample_key]), batched=True)
 print(f"Number of training examples: {len(data['train'])}")
 print(f"Batch size: {args.batch_size}")
 
@@ -110,7 +112,6 @@ for epoch in range(args.num_train_epochs):
     trainer.train()
     # Print the current epoch based on total steps
     current_epoch = (epoch * total_steps_per_epoch + trainer.state.global_step) / total_steps_per_epoch
-    print(f"Current epoch: {current_epoch:.2f}")
 
 # Benchmarking end time
 end_time = time.time()
