@@ -39,7 +39,7 @@ bnb_config = BitsAndBytesConfig(
     bnb_4bit_compute_dtype=torch.bfloat16
 )
 tokenizer = AutoTokenizer.from_pretrained(model_id)
-tokenizer.pad_token = tokenizer.eos_token
+tokenizer.pad_token = tokenizer.eos_token  # Align padding token with eos token
 model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map={"": 0})
 
 # Enable gradient checkpointing and LORA
@@ -118,7 +118,6 @@ for epoch in range(args.num_train_epochs):
     )
     model.config.use_cache = False  # Silence the warnings. Please re-enable for inference!
     
-    
     # Training
     trainer.train()
     # Print the current epoch based on total steps
@@ -140,7 +139,7 @@ print(f"Total Finetuning Time is {total_finetuning_time} seconds.")
 base_model_name = model_id.split("/")[-1]
 
 # Define the save and push paths
-adapter_model = f"Example/{base_model_name}-fine-tuned-adapters"
-new_model = f"Example/{base_model_name}-fine-tuned"
+adapter_model = f"output/{base_model_name}-fine-tuned-adapters"
+new_model = f"output/{base_model_name}-fine-tuned"
 # Save the model
 model.save_pretrained(adapter_model)
