@@ -26,6 +26,8 @@ args = parser.parse_args()
 login(token=os.environ['HF_TOKEN'])
 use_auth_token = True
 
+start_load_model_time = time.time()
+
 # Load model and tokenizer
 model_id = args.model_id
 bnb_config = BitsAndBytesConfig(
@@ -61,9 +63,11 @@ def print_trainable_parameters(model):
     print(
         f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
     )
+end_load_model_time = time.time()
+load_model_time = end_load_model_time - start_load_model_time
 
 print_trainable_parameters(model)
-
+start_load_dataset_time = time.time()
 # Load dataset
 if args.use_local_dataset:
     # Load dataset from local directory
@@ -72,6 +76,8 @@ else:
     # Load dataset from Hugging Face DataSet Hub
     data = load_dataset(args.dataset)
 data = data.map(lambda samples: tokenizer(samples[args.sample_key]), batched=True)
+end_load_dataset_time = time.time()
+load_dataset_time = end_load_dataset_time - start_load_dataset_time
 print(f"Number of training examples: {len(data['train'])}")
 print(f"Batch size: {args.batch_size}")
 
@@ -80,7 +86,7 @@ total_steps_per_epoch = len(data["train"]) // args.batch_size
 print(f"Total steps per epoch: {total_steps_per_epoch}")
 
 # Benchmarking start time
-start_time = time.time()
+start_training_time = time.time()
 
 # Training loop over multiple epochs
 for epoch in range(args.num_train_epochs):
@@ -114,10 +120,13 @@ for epoch in range(args.num_train_epochs):
     current_epoch = (epoch * total_steps_per_epoch + trainer.state.global_step) / total_steps_per_epoch
 
 # Benchmarking end time
-end_time = time.time()
+end_training_time = time.time()
 
 # Calculate elapsed time
-elapsed_time = end_time - start_time
-
+training_time = end_training_time - start_training_time
+total_finetuning_time = load_model_time + load_dataset_time + training_time
 # Print the elapsed time
-print(f"Training completed in {elapsed_time} seconds.")
+print(f"Model was downloaded and loaded in {load_model_time} seconds.")
+print(f"Dataset was downloaded and loaded in {load_dataset_time} seconds.")
+print(f"Training completed in {training_time} seconds.")
+print(f"Total Finetuning Time is {total_finetuning_time} seconds.")
