@@ -1,3 +1,3 @@
-transformers==4.31
+transformers
 bitsandbytes
 datasets
