@@ -10,7 +10,7 @@ use_auth_token=True
 parser = argparse.ArgumentParser(description="inference script with model quantization.")
 parser.add_argument("--base_model_id", type=str, default="meta-llama/Llama-2-7b-chat-hf", help="HuggingFace model ID")
 parser.add_argument("--local_model", type=str, default="output/Llama-2-7b-chat-hf-fine-tuned-adapters/", help="Local model Path")
-parser.add_argument("--input", type=str, default="Provide a very brief comparison of salsa and bachata.", help="input to chat with the model add qoutes to pass your input")
+parser.add_argument("--input_prompt", type=str, default="Provide a very brief comparison of salsa and bachata.", help="input prompt to chat with the model add qoutes to pass your input")
 
 args = parser.parse_args()
 
@@ -57,4 +57,4 @@ def stream(user_prompt):
     # Despite returning the usual output, the streamer will also print the generated text to stdout.
     _ = model.generate(**inputs, streamer=streamer, max_new_tokens=500)
     
-stream(args.input)
+stream(args.input_prompt)
