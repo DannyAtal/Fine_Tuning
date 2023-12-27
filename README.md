@@ -36,6 +36,9 @@ this is the args list for this script:
 --fp16
 --dataset
 --use_local_dataset
+--sample_key
 
+if you are using the default dataset the default sample will be quote, but if you intend to use a local dataset please use a sample key that is what associate with the dataset
+in our dataset example you must use: "input" as sample key
 
 
