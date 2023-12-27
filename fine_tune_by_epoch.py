@@ -19,7 +19,7 @@ parser.add_argument("--fp16", action="store_true", help="Enable FP16 training")
 parser.add_argument("--dataset", type=str, default="Abirate/english_quotes", help="Dataset path or HuggingFace DataSet ID")
 parser.add_argument("--use_local_dataset", action="store_true", help="Use local dataset instead of HuggingFace DataSet")
 parser.add_argument("--num_train_epochs", type=int, default=1, help="Number of training epochs")
-parser.add_argument("--sample_key", type=str default="quote", help="Accessing the input samples from the dictionary using the key "input." whic will apply the tokenizer on it ")
+parser.add_argument("--sample_key", type=str, default="quote", help="Accessing the input samples from the dictionary using the key input which will apply the tokenizer on it ")
 args = parser.parse_args()
 
 # Set Hugging Face token
