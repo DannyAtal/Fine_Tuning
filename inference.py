@@ -4,17 +4,24 @@ import torch
 import os
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from huggingface_hub import login
+import argparse
 login(token = os.environ['HF_TOKEN'])
 use_auth_token=True
-model_id = "Example/Llama-2-7b-chat-hf-fine-tuned-adapters/" ## "Trelis/Llama-2-7b-chat-hf-sharded-bf16" is an alternative if you don't have access via Meta on HuggingFace
-# model_id = "meta-llama/Llama-2-13b-chat-hf"
+parser = argparse.ArgumentParser(description="inference script with model quantization.")
+parser.add_argument("--base_model_id", type=str, default="meta-llama/Llama-2-7b-chat-hf", help="HuggingFace model ID")
+parser.add_argument("--local_model", type=str, default="output/Llama-2-7b-chat-hf-fine-tuned-adapters/", help="Local model Path")
+parser.add_argument("--input", type=str, default="Provide a very brief comparison of salsa and bachata.", help="input to chat with the model add qoutes to pass your input")
+
+args = parser.parse_args()
+
+model_id = args.local_model
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_use_double_quant=True,
     bnb_4bit_quant_type="nf4",
     bnb_4bit_compute_dtype=torch.bfloat16
 )
-base_model_id = "meta-llama/Llama-2-7b-chat-hf"  # Replace with the actual base model identifier
+base_model_id = args.base_model_id
 tokenizer = AutoTokenizer.from_pretrained(base_model_id, local_files_only=True)
 
 model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map={"":0})
@@ -50,4 +57,4 @@ def stream(user_prompt):
     # Despite returning the usual output, the streamer will also print the generated text to stdout.
     _ = model.generate(**inputs, streamer=streamer, max_new_tokens=500)
     
-stream('answer as if you were andrew grove, how are you using the time that is now being freed up because youre not going to every important meeting they have at Intel')
+stream(args.input)
