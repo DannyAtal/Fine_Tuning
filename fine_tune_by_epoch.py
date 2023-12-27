@@ -130,3 +130,12 @@ print(f"Model was downloaded and loaded in {load_model_time} seconds.")
 print(f"Dataset was downloaded and loaded in {load_dataset_time} seconds.")
 print(f"Training completed in {training_time} seconds.")
 print(f"Total Finetuning Time is {total_finetuning_time} seconds.")
+
+# Extract the last portion of the base_model
+base_model_name = model_id.split("/")[-1]
+
+# Define the save and push paths
+adapter_model = f"Example/{base_model_name}-fine-tuned-adapters"
+new_model = f"Example/{base_model_name}-fine-tuned"
+# Save the model
+model.save_pretrained(adapter_model)
