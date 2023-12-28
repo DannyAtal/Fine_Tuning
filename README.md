@@ -55,12 +55,16 @@ dataset: Dataset path or HuggingFace DataSet ID (default: Abirate/english_quotes
 use_local_dataset: Use a local dataset instead of HuggingFace DataSet (optional)
 num_train_epochs: Number of training epochs (default: 1)
 sample_key: Accessing the input samples from the dictionary using the specified key, applying the tokenizer on it (default: quote)
+````
 
 > for finetune.py additinal arguments:
+````
 use_steps: Enable Steps Training - you pass this argument to tell the code that you want to use steps instead of epochs (Optional)
 max_steps: Specify the number of steps you want to run on (default: 10)
+````
 
 > for fine_tune_by_steps.py additional arguments:
+````
 max_steps: Specify the number of steps you want to run on (default: 10)
 ````
 
