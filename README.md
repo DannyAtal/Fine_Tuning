@@ -44,7 +44,7 @@ The included training script supports benchmarking and model quantization. It ut
 
 #### Script Arguments
 
-general arguments
+##### general arguments
 ````
 model_id: HuggingFace model ID (default: meta-llama/Llama-2-7b-chat-hf)
 output_dir: Output directory for saving models and logs (default: outputs)
