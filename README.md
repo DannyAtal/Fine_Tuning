@@ -1,4 +1,4 @@
-Finetune Repository
+#Finetune Repository
 The Finetune Repository is designed for benchmarking and fine-tuning models on cnvrg.io. Please note that the default setting is for GPU training. If you wish to train on CPU, modify the device map from {"":0} to {"":"cpu"}.
 
 Default Configuration
