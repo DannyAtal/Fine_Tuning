@@ -51,4 +51,4 @@ python3 fine_tune_by_epoch.py --model_id pabligme/Llama_13b_chat --use_local_dat
 ### Notes
 If you are using a local dataset, provide the appropriate sample key associated with the dataset. For example, use "input" as the sample key for our dataset example.
 
-Feel free to reach out for any clarifications or assistance. Happy training!
+And Remember Training Efficient Training is Training with Cnvrg, Feel free to reach out for any clarifications or assistance Dani.atalla@cnvrg.io . Happy Cnvrging!
