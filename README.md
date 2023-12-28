@@ -36,7 +36,9 @@ python3 fine_tune_by_epoch.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batc
 
 ### Requirements
 Before starting a job, ensure you set your HuggingFace token as an environment variable under project settings:
+
 ``HF_TOKEN={YOUR_HUGGINGFACE_TOKEN}``
+
 For Meta Llama2, you'll need an approved HF token. Contact me in Slack for approved token.
 
 #### Script Details
