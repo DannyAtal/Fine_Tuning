@@ -5,11 +5,22 @@ The Finetune Repository is designed for benchmarking and fine-tuning models on c
 The default model is meta-llama/Llama-2-7b-chat-hf, paired with the Abirate/english_quotes dataset. You can customize both the model and dataset as needed.
 
 ### Usage
+this repo was prepared to help the researcher testing cnvrg platform/LLM Model upon cnvrg so i created 3 scripts to make it easier for the user to perform the test.
+````
+finetune.py
 fine_tune_by_steps.py
-Execute the script with default values:
-python3 fine_tune_by_steps.py
+fine_tune_by_epochs.py
+````
+#### you can Execute Either one of the scripts with default values:
+python3 finetune.py
 
 ### Specify parameters during execution:
+
+for finetune.py
+````
+python3 finetune.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --max_steps MAX_STEPS --learning_rate LEARNING_RATE --fp16 --dataset DATASET
+````
+for fine_tune_by_steps.py
 ````
 python3 fine_tune_by_steps.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --max_steps MAX_STEPS --learning_rate LEARNING_RATE --fp16 --dataset DATASET
 ````
@@ -32,6 +43,8 @@ For Meta Llama2, you'll need an approved HF token. Contact me in Slack for appro
 The included training script supports benchmarking and model quantization. It utilizes the specified model, tokenizer, and enables features like gradient checkpointing and LORA.
 
 #### Script Arguments
+
+general arguments
 ````
 model_id: HuggingFace model ID (default: meta-llama/Llama-2-7b-chat-hf)
 output_dir: Output directory for saving models and logs (default: outputs)
@@ -42,6 +55,13 @@ dataset: Dataset path or HuggingFace DataSet ID (default: Abirate/english_quotes
 use_local_dataset: Use a local dataset instead of HuggingFace DataSet (optional)
 num_train_epochs: Number of training epochs (default: 1)
 sample_key: Accessing the input samples from the dictionary using the specified key, applying the tokenizer on it (default: quote)
+
+> for finetune.py additinal arguments:
+use_steps: Enable Steps Training - you pass this argument to tell the code that you want to use steps instead of epochs (Optional)
+max_steps: Specify the number of steps you want to run on (default: 10)
+
+> for fine_tune_by_steps.py additional arguments:
+max_steps: Specify the number of steps you want to run on (default: 10)
 ````
 
 ### Example Execution
