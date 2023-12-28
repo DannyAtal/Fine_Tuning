@@ -11,25 +11,25 @@ finetune.py
 fine_tune_by_steps.py
 fine_tune_by_epochs.py
 ````
-#### you can Execute Either one of the scripts with default values:
+#### you can Execute Either one of the scripts with default values like so:
 python3 finetune.py
 
-### Specify parameters during execution:
+### Or Specify one/all parameters during execution:
 
-for finetune.py
+#### for finetune.py script:
 ````
-python3 finetune.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --max_steps MAX_STEPS --learning_rate LEARNING_RATE --fp16 --dataset DATASET
+python3 finetune.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --num_train_epochs NUM_TRAIN_EPOCHS --learning_rate LEARNING_RATE --fp16 --dataset DATASET
+
+## for steps mode:
+python3 finetune.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --use_steps --max_steps MAX_STEPS --learning_rate LEARNING_RATE --fp16 --dataset DATASET
 ````
-for fine_tune_by_steps.py
+
+#### for fine_tune_by_steps.py script:
 ````
 python3 fine_tune_by_steps.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --max_steps MAX_STEPS --learning_rate LEARNING_RATE --fp16 --dataset DATASET
 ````
+#### for fine_tune_by_epochs.py script:
 
-fine_tune_by_epoch.py
-#### Execute the script with default values:
-python3 fine_tune_by_epoch.py
-
-#### Specify parameters during execution:
 ````
 python3 fine_tune_by_epoch.py --model_id MODEL_ID --output_dir OUTPUT_DIR --batch_size BATCH_SIZE --num_train_epochs NUM_TRAIN_EPOCHS --learning_rate LEARNING_RATE --fp16 --dataset DATASET --use_local_dataset --sample_key SAMPLE_KEY
 ````
