@@ -40,7 +40,7 @@ bnb_config = BitsAndBytesConfig(
 )
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 tokenizer.pad_token = tokenizer.eos_token  # Align padding token with eos token
-model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map={"": 0})
+model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map="auto")
 
 # Enable gradient checkpointing and LORA
 model.gradient_checkpointing_enable()
